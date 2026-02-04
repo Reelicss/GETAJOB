@@ -581,11 +581,14 @@ registerCommand("stun", {}, false, function(caller, targetName)
 		sound.Parent = soundService;
 		sound:Play()
 
-		-- Fade out effect
+		-- Fade out effect over 5 seconds
 		task.spawn(function()
-			for i = 0, 1, 0.05 do
+			-- Keep full white for 2 seconds
+			task.wait(2)
+			-- Then fade out over 3 seconds
+			for i = 0, 1, 0.02 do
 				flash.BackgroundTransparency = i
-				task.wait(0.05)
+				task.wait(0.06)
 			end
 			flashGui:Destroy()
 			sound:Destroy()
