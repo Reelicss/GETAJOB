@@ -98,14 +98,13 @@ local RankData = {
     primary = Color3.fromRGB(20, 20, 20),
     AnimateName = false,
     JumpLetters = false,
-    GlitchName = true,
+    GlitchName = false,
     UseImage = true,
-    accent = ColorSequence.new{
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 128, 128)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(180, 255, 230))
-},
- emoji = "👑",
-    image = "http://www.roblox.com/asset/?id=126879270398478"
+    iconSize = 42,
+    accent = Color3.fromRGB(0, 120, 255),
+    emoji = "👑",
+    image = "http://www.roblox.com/asset/?id=87067832527594",
+    bgImage = "http://www.roblox.com/asset/?id=100032931013308"
   },
   ["HEAD STAFF"] = {
     primary = Color3.fromRGB(40, 0, 0),
@@ -382,14 +381,30 @@ local function attachTagToHead(character, player, rankText)
     return typeof(value) == "ColorSequence"
   end
 
+  -- Background image layer (below everything, for ranks that use bgImage)
+  if rankData.bgImage and rankData.bgImage ~= "" then
+    local bgImage = Instance.new("ImageLabel")
+    bgImage.Name = "BgImage"
+    bgImage.Size = UDim2.new(1, 0, 1, 0)
+    bgImage.Position = UDim2.new(0, 0, 0, 0)
+    bgImage.BackgroundTransparency = 1
+    bgImage.Image = rankData.bgImage
+    bgImage.ScaleType = Enum.ScaleType.Stretch
+    bgImage.ZIndex = 0
+    bgImage.Parent = tag
+    local bgCorner = Instance.new("UICorner")
+    bgCorner.CornerRadius = CONFIG.CORNER_RADIUS
+    bgCorner.Parent = bgImage
+  end
+
   -- Main container (tag background)
   local container = Instance.new("Frame")
   container.Name = "TagContainer"
   container.Size = UDim2.new(1, 0, 1, 0)
   container.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-  container.BackgroundTransparency = 0
+  container.BackgroundTransparency = (rankData.bgImage and rankData.bgImage ~= "") and 1 or 0
   container.BorderSizePixel = 0
-  container.ClipsDescendants = true
+  container.ClipsDescendants = false
   container.ZIndex = 1
   container.Parent = tag
 
@@ -419,12 +434,13 @@ local function attachTagToHead(character, player, rankText)
     end)
   end
 
+  local iconSize = rankData.iconSize or 30
   local emojiLabel
   if rankData.UseImage and rankData.image ~= "" then
     emojiLabel = Instance.new("ImageLabel")
     emojiLabel.Name = "EmojiLabel"
-    emojiLabel.Size = UDim2.new(0, 30, 0, 30)
-    emojiLabel.Position = UDim2.new(0, 8, 0.5, -15)
+    emojiLabel.Size = UDim2.new(0, iconSize, 0, iconSize)
+    emojiLabel.Position = UDim2.new(0, 8, 0.5, -iconSize/2)
     emojiLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
     emojiLabel.BackgroundTransparency = 0
     emojiLabel.Image = rankData.image
@@ -586,7 +602,7 @@ local function attachTagToHead(character, player, rankText)
   end)
   local sidePadding = 24
   local emojiWidth = 36
-  local emojiLabelWidth = 30
+  local emojiLabelWidth = iconSize
   local emojiLeftPadding = 8
   local rankWidthActual = getTextWidth(rankLabel.Text, rankLabel.Font, rankLabel.TextSize)
   local displayNameWidthActual = getTextWidth("@" .. fullDisplayName, displayNameLabel.Font, displayNameLabel.TextSize)
@@ -594,8 +610,8 @@ local function attachTagToHead(character, player, rankText)
   local totalWidth = emojiLeftPadding + emojiLabelWidth + sidePadding + maxTextWidth + sidePadding
   tag.Size = UDim2.new(0, totalWidth, 0, CONFIG.TAG_SIZE.Y.Offset)
   container.Size = UDim2.new(1, 0, 1, 0)
-  emojiLabel.Position = UDim2.new(0, emojiLeftPadding, 0.5, -15)
-  emojiLabel.Size = UDim2.new(0, emojiLabelWidth, 0, 30)
+  emojiLabel.Position = UDim2.new(0, emojiLeftPadding, 0.5, -iconSize/2)
+  emojiLabel.Size = UDim2.new(0, iconSize, 0, iconSize)
   local textBlockXOffset = emojiLeftPadding + emojiLabelWidth + sidePadding
   rankLabel.Position = UDim2.new(0, textBlockXOffset, 0, 9)
   rankLabel.Size = UDim2.new(0, rankWidthActual, 0, 16)
@@ -628,7 +644,7 @@ local function attachTagToHead(character, player, rankText)
           TweenService:Create(tag, TweenInfo.new(0.5), { Size = FULL_SIZE, StudsOffset = CONFIG.TAG_OFFSET }):Play()
           TweenService:Create(rankLabel, TweenInfo.new(0.5), { TextTransparency = 0 }):Play()
           TweenService:Create(displayNameLabel, TweenInfo.new(0.5), { TextTransparency = 0 }):Play()
-          TweenService:Create(emojiLabel, TweenInfo.new(0.5), { Position = UDim2.new(0, 8, 0.5, -15), Size = UDim2.new(0, 30, 0, 30)}):Play()
+          TweenService:Create(emojiLabel, TweenInfo.new(0.5), { Position = UDim2.new(0, emojiLeftPadding, 0.5, -iconSize/2), Size = UDim2.new(0, iconSize, 0, iconSize)}):Play()
           TweenService:Create(containerCorner, TweenInfo.new(0.5), { CornerRadius = CONFIG.CORNER_RADIUS }):Play()
         end
       end
