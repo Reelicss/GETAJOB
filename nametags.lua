@@ -35,9 +35,10 @@ local function fetchJson(url2, maxRetries)
   return false, tagConfig
 end
 
--- Initialize tagConfig async so script doesn't block on load
-local tagConfig = {}
-local tagConfigLoaded = false
+-- Initialize tagConfig and playerToTag
+local success, tagConfig = fetchJson(JSON_URL, MAX_RETRIES)
+if not success then
+end
 
 
 local tagOrder = {
@@ -55,7 +56,17 @@ local tagOrder = {
 
 
 local playerToTag = {}
-local jsonFetchDone = false
+for _, tag in ipairs(tagOrder) do
+  local users = tagConfig[tag]
+  if users then
+    for _, user in ipairs(users) do
+      local userLower = user:lower()
+      if not playerToTag[userLower] then
+        playerToTag[userLower] = tag
+      end
+    end
+  end
+end
 
 local function containsIgnoreCase(tbl, name)
   if not name then return false end
