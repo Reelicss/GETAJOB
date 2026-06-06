@@ -2300,8 +2300,6 @@ local function applyPlayerTag(player)
   -- Prioritize rank from playerToTag
   if playerToTag[playerNameLower] then
     assignedTag = playerToTag[playerNameLower]
-  elseif ChatWhitelist[playerNameLower] then
-    assignedTag = "USER"
   else
     return -- no tag for this player
   end
