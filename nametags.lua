@@ -333,7 +333,7 @@ local function teleportToPlayer(targetPlayer)
   task.wait(fadeTime)
   hrp.CFrame = CFrame.new(teleportPosition, targetHRP.Position)
   local teleportSound = Instance.new("Sound")
-  teleportSound.SoundId = "rbxassetid://5066021887"
+  teleportSound.SoundId = "rbxassetid://140492333775342"
   teleportSound.Parent = hrp
   teleportSound.Volume = 0.5
   teleportSound:Play()
