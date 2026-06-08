@@ -103,8 +103,8 @@ local RankData = {
     iconSize = 42,
     accent = Color3.fromRGB(0, 120, 255),
     emoji = "👑",
-    image = "http://www.roblox.com/asset/?id=87067832527594",
-    bgImage = "http://www.roblox.com/asset/?id=100032931013308"
+    image = "http://www.roblox.com/asset/?id=136305938226249",
+    bgImage = "http://www.roblox.com/asset/?id=110234618011603"
   },
   ["HEAD STAFF"] = {
     primary = Color3.fromRGB(40, 0, 0),
