@@ -95,7 +95,7 @@ local CONFIG = {
 
 local RankData = {
   ["OWNER"] = {
-    primary = Color3.fromRGB(20, 20, 20),
+    primary = Color3.fromRGB(0, 0, 0),
     AnimateName = false,
     JumpLetters = false,
     GlitchName = false,
@@ -103,8 +103,8 @@ local RankData = {
     iconSize = 42,
     accent = Color3.fromRGB(0, 120, 255),
     emoji = "👑",
-    image = "http://www.roblox.com/asset/?id=136305938226249",
-    bgImage = "http://www.roblox.com/asset/?id=110234618011603"
+    image = "http://www.roblox.com/asset/?id=113711040618782",
+    bgImage = "http://www.roblox.com/asset/?id=77041475606494"
   },
   ["HEAD STAFF"] = {
     primary = Color3.fromRGB(40, 0, 0),
