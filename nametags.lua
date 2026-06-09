@@ -219,7 +219,7 @@ local RankData = {
     GlitchName = false,
     UseImage = true,
     NoBorder = false,
-    accent = Color3.fromRGB(180, 120, 255),
+    accent = Color3.fromRGB(255, 0, 0),
     emoji = "⭐",
     image = "http://www.roblox.com/asset/?id=127768024083075",
     bgImage = "http://www.roblox.com/asset/?id=110094788133802",
@@ -425,6 +425,7 @@ local function attachTagToHead(character, player, rankText)
   end
 
   -- Background image layer (below everything, for ranks that use bgImage)
+  local bgImageRef = nil
   if rankData.bgImage and rankData.bgImage ~= "" then
     local bgImage = Instance.new("ImageLabel")
     bgImage.Name = "BgImage"
@@ -438,6 +439,7 @@ local function attachTagToHead(character, player, rankText)
     local bgCorner = Instance.new("UICorner")
     bgCorner.CornerRadius = CONFIG.CORNER_RADIUS
     bgCorner.Parent = bgImage
+    bgImageRef = bgImage
   end
 
   -- Main container (tag background)
@@ -460,7 +462,8 @@ local function attachTagToHead(character, player, rankText)
   border.Color = typeof(rankData.accent) == "Color3" and rankData.accent or Color3.fromRGB(35, 35, 35)
   border.Thickness = rankData.NoBorder and 0 or 1.5
   border.Transparency = rankData.NoBorder and 1 or 0
-  border.Parent = container
+  -- For bgImage ranks, attach stroke to the image so it aligns correctly
+  border.Parent = bgImageRef or container
 
   local clickButton = Instance.new("TextButton")
   clickButton.Name = "ClickButton"
