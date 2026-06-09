@@ -47,6 +47,7 @@ local tagOrder = {
   "STAFF",
   "HELPER",
   "LUA",
+  "LYRICAL TOP 1",
   "CONTENT CREATOR",
   "UNICORN",
   "TRIAL SUPPORT",
@@ -54,6 +55,7 @@ local tagOrder = {
   "BOOSTER",
   "AAVOX",
   "POSSESSIVE",
+  "BLAZE",
 }
 
 
@@ -160,6 +162,16 @@ local RankData = {
     emoji = "",
     image = "http://www.roblox.com/asset/?id=125279982901185"
   },
+  ["LYRICAL TOP 1"] = {
+    primary = Color3.fromRGB(20, 20, 20),
+    AnimateName = false,
+    JumpLetters = false,
+    GlitchName = false,
+    UseImage = true,
+    accent = Color3.fromRGB(241, 196, 15),
+    emoji = "",
+    image = "http://www.roblox.com/asset/?id=120047190610839"
+  },
   ["UNICORN"] = {
     primary = Color3.fromRGB(20, 20, 20),
     AnimateName = false,
@@ -225,6 +237,19 @@ local RankData = {
     emoji = "",
     image = "http://www.roblox.com/asset/?id=127768024083075",
     bgImage = "http://www.roblox.com/asset/?id=110094788133802"
+  },
+  ["BLAZE"] = {
+    primary = Color3.fromRGB(20, 20, 20),
+    AnimateName = false,
+    JumpLetters = false,
+    GlitchName = false,
+    UseImage = true,
+    iconSize = 42,
+    accent = Color3.fromRGB(0, 0, 0),
+    textColor = Color3.fromRGB(255, 255, 255),
+    emoji = "",
+    image = "http://www.roblox.com/asset/?id=132678005842294",
+    bgImage = "http://www.roblox.com/asset/?id=90737239054488"
   },
   ["Xnoctis"] = {
     primary = Color3.fromRGB(20, 20, 20),
@@ -457,7 +482,7 @@ local function attachTagToHead(character, player, rankText)
   containerCorner.Parent = container
 
   -- Border: OWNER gets thickness 2, everyone else 1.5
-  local isOwner = rankText == "OWNER" or rankText == "AAVOX" or rankText == "POSSESSIVE"
+  local isOwner = rankText == "OWNER" or rankText == "AAVOX" or rankText == "POSSESSIVE" or rankText == "BLAZE"
   local borderThickness = isOwner and 2 or 1.5
   local border = Instance.new("UIStroke")
   border.Color = typeof(rankData.accent) == "Color3" and rankData.accent or Color3.fromRGB(35, 35, 35)
