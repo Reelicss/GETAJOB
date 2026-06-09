@@ -97,17 +97,16 @@ local CONFIG = {
 
 local RankData = {
   ["OWNER"] = {
-    primary = Color3.fromRGB(0, 0, 0),
+    primary = Color3.fromRGB(20, 20, 20),
     AnimateName = false,
     JumpLetters = false,
     GlitchName = false,
     UseImage = true,
     iconSize = 42,
-    accent = Color3.fromRGB(255, 255, 255),
-    emoji = "",
-    image = "http://www.roblox.com/asset/?id=128634152988614",
-    bgImage = "http://www.roblox.com/asset/?id=137782422455419",
-    textColor = Color3.fromRGB(255, 255, 255)
+    accent = Color3.fromRGB(0, 120, 255),
+    emoji = "👑",
+    image = "http://www.roblox.com/asset/?id=87067832527594",
+    bgImage = "http://www.roblox.com/asset/?id=100032931013308"
   },
   ["HEAD STAFF"] = {
     primary = Color3.fromRGB(40, 0, 0),
@@ -201,16 +200,16 @@ local RankData = {
     image = "http://www.roblox.com/asset/?id=117161675744244"
   },
   ["AAVOX"] = {
-    primary = Color3.fromRGB(0, 0, 0),
+    primary = Color3.fromRGB(20, 20, 20),
     AnimateName = false,
     JumpLetters = false,
     GlitchName = false,
-    UseImage = false,
-    accent = Color3.fromRGB(0, 56, 184),
+    UseImage = true,
+    iconSize = 42,
+    accent = Color3.fromRGB(0, 71, 171),
     emoji = "⭐",
-    image = "",
-    bgImage = "http://www.roblox.com/asset/?id=75863367002079",
-    textColor = Color3.fromRGB(0, 56, 184)
+    image = "http://www.roblox.com/asset/?id=75863367002079",
+    bgImage = "http://www.roblox.com/asset/?id=110094788133802"
   },
   ["POSSESSIVE"] = {
     primary = Color3.fromRGB(20, 20, 20),
@@ -218,12 +217,11 @@ local RankData = {
     JumpLetters = false,
     GlitchName = false,
     UseImage = true,
-    NoBorder = false,
+    iconSize = 42,
     accent = Color3.fromRGB(255, 0, 0),
     emoji = "⭐",
     image = "http://www.roblox.com/asset/?id=127768024083075",
-    bgImage = "http://www.roblox.com/asset/?id=110094788133802",
-    textColor = Color3.fromRGB(255, 0, 0)
+    bgImage = "http://www.roblox.com/asset/?id=110094788133802"
   },
   ["Xnoctis"] = {
     primary = Color3.fromRGB(20, 20, 20),
@@ -305,19 +303,15 @@ local function createParticles(tag, parent, accentColor)
   end
 end
 
-local isTeleporting = false
-
 local function teleportToPlayer(targetPlayer)
-  if isTeleporting then return end
-  isTeleporting = true
   local localPlayer = Players.LocalPlayer
   local character = localPlayer.Character
   local targetCharacter = targetPlayer.Character
-  if not (character and targetCharacter) then isTeleporting = false return end
+  if not (character and targetCharacter) then return end
   local humanoid = character:FindFirstChild("Humanoid")
   local hrp = character:FindFirstChild("HumanoidRootPart")
   local targetHRP = targetCharacter:FindFirstChild("UpperTorso") or targetCharacter:FindFirstChild("HumanoidRootPart")
-  if not (humanoid and hrp and targetHRP) then isTeleporting = false return end
+  if not (humanoid and hrp and targetHRP) then return end
   local targetCFrame = targetHRP.CFrame
   local teleportPosition = targetCFrame.Position - (targetCFrame.LookVector * CONFIG.TELEPORT_DISTANCE)
   teleportPosition = teleportPosition + Vector3.new(0, CONFIG.TELEPORT_HEIGHT, 0)
@@ -352,23 +346,9 @@ local function teleportToPlayer(targetPlayer)
   local fadeTime = 0.1
   local tweenInfo = TweenInfo.new(fadeTime, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
   local meshParts = {}
-  local originalTransparency = {}
   for _, part in ipairs(character:GetDescendants()) do
     if part:IsA("MeshPart") or part:IsA("Part") then
-      -- Skip parts inside Accessories (e.g. Korblox leg replacement)
-      local isAccessory = false
-      local ancestor = part.Parent
-      while ancestor and ancestor ~= character do
-        if ancestor:IsA("Accessory") then
-          isAccessory = true
-          break
-        end
-        ancestor = ancestor.Parent
-      end
-      if not isAccessory then
-        table.insert(meshParts, part)
-        originalTransparency[part] = part.Transparency
-      end
+      table.insert(meshParts, part)
     end
   end
   for _, part in ipairs(meshParts) do
@@ -385,20 +365,12 @@ local function teleportToPlayer(targetPlayer)
   teleportSound:Play()
   for _, part in ipairs(meshParts) do
     if part.Name == "HumanoidRootPart" then continue end
-    local origTrans = originalTransparency[part] or 0
-    local tween = TweenService:Create(part, tweenInfo, {Transparency = origTrans})
+    local tween = TweenService:Create(part, tweenInfo, {Transparency = 0})
     tween:Play()
   end
   game.Debris:AddItem(teleportSound, 2)
   game.Debris:AddItem(particlepart, 1)
   game.Debris:AddItem(particlepart2, 1)
-  -- Ensure all parts are fully restored before releasing debounce
-  task.wait(fadeTime)
-  for _, part in ipairs(meshParts) do
-    if part.Name == "HumanoidRootPart" then continue end
-    part.Transparency = originalTransparency[part] or 0
-  end
-  isTeleporting = false
 end
 
 local function getTextWidth(text, font, textSize)
@@ -436,7 +408,6 @@ local function attachTagToHead(character, player, rankText)
   end
 
   -- Background image layer (below everything, for ranks that use bgImage)
-  local bgImageRef = nil
   if rankData.bgImage and rankData.bgImage ~= "" then
     local bgImage = Instance.new("ImageLabel")
     bgImage.Name = "BgImage"
@@ -450,7 +421,6 @@ local function attachTagToHead(character, player, rankText)
     local bgCorner = Instance.new("UICorner")
     bgCorner.CornerRadius = CONFIG.CORNER_RADIUS
     bgCorner.Parent = bgImage
-    bgImageRef = bgImage
   end
 
   -- Main container (tag background)
@@ -468,13 +438,12 @@ local function attachTagToHead(character, player, rankText)
   containerCorner.CornerRadius = CONFIG.CORNER_RADIUS
   containerCorner.Parent = container
 
-  -- Border: use accent colour if Color3, otherwise grey; hidden for NoBorder ranks
+  -- Border: use accent colour if Color3, otherwise grey
   local border = Instance.new("UIStroke")
   border.Color = typeof(rankData.accent) == "Color3" and rankData.accent or Color3.fromRGB(35, 35, 35)
-  border.Thickness = rankData.NoBorder and 0 or 1.5
-  border.Transparency = rankData.NoBorder and 1 or 0
-  -- For bgImage ranks, attach stroke to the image so it aligns correctly
-  border.Parent = bgImageRef or container
+  border.Thickness = 1.5
+  border.Transparency = 0
+  border.Parent = container
 
   local clickButton = Instance.new("TextButton")
   clickButton.Name = "ClickButton"
@@ -536,7 +505,7 @@ local function attachTagToHead(character, player, rankText)
   displayNameLabel.TextXAlignment = Enum.TextXAlignment.Left
   displayNameLabel.ZIndex = 5
 
-  displayNameLabel.TextColor3 = rankData.textColor or Color3.new(1, 1, 1)
+  displayNameLabel.TextColor3 = Color3.new(1, 1, 1)
   displayNameLabel.RichText = false
 
   local rankLabel = Instance.new("TextLabel")
@@ -555,7 +524,7 @@ local function attachTagToHead(character, player, rankText)
     end
   end
 
-  rankLabel.TextColor3 = rankData.textColor or Color3.new(1, 1, 1)
+  rankLabel.TextColor3 = Color3.new(1, 1, 1)
 
   spawn(function()
   while tag and tag.Parent do
@@ -692,49 +661,15 @@ local function attachTagToHead(character, player, rankText)
           rankLabel.TextTransparency = 1
           displayNameLabel.TextTransparency = 1
           TweenService:Create(tag, TweenInfo.new(0.5), { Size = MINI_SIZE, StudsOffset = MINI_OFFSET }):Play()
+          TweenService:Create(emojiLabel, TweenInfo.new(0.5), { Position = UDim2.new(0.5, -15, 0.5, -15), Size = UDim2.new(0, 30, 0, 30)}):Play()
           TweenService:Create(containerCorner, TweenInfo.new(0.5), { CornerRadius = UDim.new(0, 10) }):Play()
           border.Color = typeof(rankData.accent) == "Color3" and rankData.accent or Color3.fromRGB(35, 35, 35)
-          border.Thickness = rankData.NoBorder and 0 or 1.5
-          if bgImageRef and rankData.UseImage and rankData.image ~= "" then
-            -- Has both banner + icon: hide banner, hide container, show icon fullscreen on tag
-            TweenService:Create(bgImageRef, TweenInfo.new(0.2), { ImageTransparency = 1 }):Play()
-            TweenService:Create(container, TweenInfo.new(0.2), { BackgroundTransparency = 1 }):Play()
-            emojiLabel.Parent = tag
-            emojiLabel.Size = UDim2.new(1, 0, 1, 0)
-            emojiLabel.Position = UDim2.new(0, 0, 0, 0)
-            emojiLabel.ScaleType = Enum.ScaleType.Fit
-            emojiLabel.ZIndex = 5
-            -- Stroke on the icon itself
-            local miniStroke = Instance.new("UIStroke")
-            miniStroke.Name = "MiniStroke"
-            miniStroke.Color = typeof(rankData.accent) == "Color3" and rankData.accent or Color3.fromRGB(35, 35, 35)
-            miniStroke.Thickness = rankData.NoBorder and 0 or 1.5
-            miniStroke.Parent = emojiLabel
-            local miniCorner = Instance.new("UICorner")
-            miniCorner.Name = "MiniCorner"
-            miniCorner.CornerRadius = UDim.new(0, 10)
-            miniCorner.Parent = emojiLabel
-          else
-            TweenService:Create(emojiLabel, TweenInfo.new(0.5), { Position = UDim2.new(0.5, -15, 0.5, -15), Size = UDim2.new(0, 30, 0, 30) }):Play()
-          end
+          border.Thickness = 1.5
         elseif distance < (CONFIG.DISTANCE_THRESHOLD - CONFIG.HYSTERESIS) and isMinimized then
           isMinimized = false
           TweenService:Create(tag, TweenInfo.new(0.5), { Size = FULL_SIZE, StudsOffset = CONFIG.TAG_OFFSET }):Play()
+          TweenService:Create(emojiLabel, TweenInfo.new(0.5), { Position = UDim2.new(0, emojiLeftPadding, 0.5, -iconSize/2), Size = UDim2.new(0, iconSize, 0, iconSize)}):Play()
           TweenService:Create(containerCorner, TweenInfo.new(0.5), { CornerRadius = CONFIG.CORNER_RADIUS }):Play()
-          if bgImageRef and rankData.UseImage and rankData.image ~= "" then
-            -- Restore: remove mini extras, move icon back into container, show banner
-            local ms = emojiLabel:FindFirstChild("MiniStroke")
-            if ms then ms:Destroy() end
-            local mc = emojiLabel:FindFirstChild("MiniCorner")
-            if mc then mc:Destroy() end
-            emojiLabel.Parent = container
-            emojiLabel.Size = UDim2.new(0, iconSize, 0, iconSize)
-            emojiLabel.Position = UDim2.new(0, emojiLeftPadding, 0.5, -iconSize/2)
-            emojiLabel.ScaleType = Enum.ScaleType.Fit
-            TweenService:Create(bgImageRef, TweenInfo.new(0.3), { ImageTransparency = 0 }):Play()
-          else
-            TweenService:Create(emojiLabel, TweenInfo.new(0.5), { Position = UDim2.new(0, emojiLeftPadding, 0.5, -iconSize/2), Size = UDim2.new(0, iconSize, 0, iconSize) }):Play()
-          end
           task.delay(0.25, function()
             if tag and tag.Parent then
               TweenService:Create(rankLabel, TweenInfo.new(0.3), { TextTransparency = 0 }):Play()
