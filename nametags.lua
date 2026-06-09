@@ -407,22 +407,6 @@ local function attachTagToHead(character, player, rankText)
     return typeof(value) == "ColorSequence"
   end
 
-  -- Background image layer (below everything, for ranks that use bgImage)
-  if rankData.bgImage and rankData.bgImage ~= "" then
-    local bgImage = Instance.new("ImageLabel")
-    bgImage.Name = "BgImage"
-    bgImage.Size = UDim2.new(1, 0, 1, 0)
-    bgImage.Position = UDim2.new(0, 0, 0, 0)
-    bgImage.BackgroundTransparency = 1
-    bgImage.Image = rankData.bgImage
-    bgImage.ScaleType = Enum.ScaleType.Stretch
-    bgImage.ZIndex = 0
-    bgImage.Parent = tag
-    local bgCorner = Instance.new("UICorner")
-    bgCorner.CornerRadius = CONFIG.CORNER_RADIUS
-    bgCorner.Parent = bgImage
-  end
-
   -- Main container (tag background)
   local container = Instance.new("Frame")
   container.Name = "TagContainer"
@@ -441,9 +425,26 @@ local function attachTagToHead(character, player, rankText)
   -- Border: use accent colour if Color3, otherwise grey
   local border = Instance.new("UIStroke")
   border.Color = typeof(rankData.accent) == "Color3" and rankData.accent or Color3.fromRGB(35, 35, 35)
-  border.Thickness = 1.5
+  border.Thickness = 2.5
   border.Transparency = 0
+  border.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
   border.Parent = container
+
+  -- Background image layer (inside container so it shares the same rounded corners + border)
+  if rankData.bgImage and rankData.bgImage ~= "" then
+    local bgImage = Instance.new("ImageLabel")
+    bgImage.Name = "BgImage"
+    bgImage.Size = UDim2.new(1, 0, 1, 0)
+    bgImage.Position = UDim2.new(0, 0, 0, 0)
+    bgImage.BackgroundTransparency = 1
+    bgImage.Image = rankData.bgImage
+    bgImage.ScaleType = Enum.ScaleType.Stretch
+    bgImage.ZIndex = 0
+    bgImage.Parent = container
+    local bgCorner = Instance.new("UICorner")
+    bgCorner.CornerRadius = CONFIG.CORNER_RADIUS
+    bgCorner.Parent = bgImage
+  end
 
   local clickButton = Instance.new("TextButton")
   clickButton.Name = "ClickButton"
@@ -664,7 +665,7 @@ local function attachTagToHead(character, player, rankText)
           TweenService:Create(emojiLabel, TweenInfo.new(0.5), { Position = UDim2.new(0.5, -15, 0.5, -15), Size = UDim2.new(0, 30, 0, 30)}):Play()
           TweenService:Create(containerCorner, TweenInfo.new(0.5), { CornerRadius = UDim.new(0, 10) }):Play()
           border.Color = typeof(rankData.accent) == "Color3" and rankData.accent or Color3.fromRGB(35, 35, 35)
-          border.Thickness = 1.5
+          border.Thickness = 2.5
         elseif distance < (CONFIG.DISTANCE_THRESHOLD - CONFIG.HYSTERESIS) and isMinimized then
           isMinimized = false
           TweenService:Create(tag, TweenInfo.new(0.5), { Size = FULL_SIZE, StudsOffset = CONFIG.TAG_OFFSET }):Play()
